@@ -9,8 +9,10 @@ This project provides an API for storing encrypted data securely. It leverages m
 ## Features
 
 - **Secure Storage**: All secrets are stored encrypted
-- **Builtin Web UI**: A simple web interface for managing secrets
 - **RESTful API**: Builtin RESTful API to encrypt/decrypt secrets
+- **Builtin Web UI**: A simple web interface for managing secrets
+
+![Encryption interface screenshot](screenshots/encrypt.png)
 
 ### Installation
 

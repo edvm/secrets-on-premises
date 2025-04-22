@@ -6,6 +6,7 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 default-run = "secrets-cli"
+authors = ["Emiliano Dalla Verde Marcozzi <6564766d@gmail.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
