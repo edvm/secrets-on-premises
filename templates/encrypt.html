@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypt Secret // SECURE_NODE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-text: #cccccc;
+            --color-text-dark: #888888;
+            --color-primary: #ffffff;
+            --color-border: #333333;
+            --color-border-focus: #777777;
+            --color-input-bg: #1a1a1a;
+            --color-button-bg: #444444;
+            --color-button-hover-bg: #666666;
+            --color-error: #ff8888;
+            --color-success: #ccffcc;
+            --font-family: 'Share Tech Mono', monospace;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(50, 50, 50, 0.1) 25%, transparent 25%, transparent 75%, rgba(50, 50, 50, 0.1) 75%),
+                linear-gradient(-45deg, rgba(30, 30, 30, 0.1) 10%, transparent 10%, transparent 90%, rgba(30, 30, 30, 0.1) 90%);
+            background-size: 3px 3px;
+            z-index: 0;
+            pointer-events: none;
+            animation: glitch 0.8s infinite steps(2, end);
+        }
+
+        body::after {
+            animation: glitch-alt 0.5s infinite steps(3, start);
+            opacity: 0.7;
+        }
+
+        @keyframes glitch {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+
+            10% {
+                transform: translate(-2px, 1px);
+                opacity: 0.8;
+            }
+
+            20% {
+                transform: translate(1px, -1px);
+            }
+
+            30% {
+                transform: translate(-1px, 2px);
+                opacity: 0.9;
+            }
+
+            40% {
+                transform: translate(2px, -1px);
+            }
+
+            50% {
+                transform: translate(-2px, 1px);
+                opacity: 0.7;
+            }
+
+            60% {
+                transform: translate(1px, 1px);
+            }
+
+            70% {
+                transform: translate(-1px, -2px);
+                opacity: 1;
+            }
+
+            80% {
+                transform: translate(2px, 2px);
+            }
+
+            90% {
+                transform: translate(-2px, -1px);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes glitch-alt {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(1px, -1px) scale(1.01);
+            }
+
+            50% {
+                transform: translate(-1px, 1px);
+            }
+
+            75% {
+                transform: translate(1px, 1px) scale(0.99);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(150, 150, 150, 0.1), 0 0 20px rgba(150, 150, 150, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 15px rgba(200, 200, 200, 0.2), 0 0 30px rgba(200, 200, 200, 0.15);
+            }
+        }
+
+        .container {
+            background-color: rgba(15, 15, 15, 0.85);
+            /* Slightly transparent */
+            padding: 30px 40px;
+            border: 1px solid var(--color-border);
+            border-radius: 5px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            /* Above background glitch */
+            backdrop-filter: blur(2px);
+            /* Subtle blur effect */
+            animation: pulse-glow 5s infinite ease-in-out;
+        }
+
+        h1 {
+            color: var(--color-primary);
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: normal;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-text-dark);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--color-input-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 3px;
+            color: var(--color-text);
+            font-family: var(--font-family);
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-border-focus);
+            box-shadow: 0 0 8px rgba(150, 150, 150, 0.3);
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23888' d='M0 2l4 4 4-4H0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 8px;
+            padding-right: 30px;
+            cursor: pointer;
+        }
+
+        input[type="number"] {
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .submit-btn {
+            background-color: var(--color-button-bg);
+            color: var(--color-primary);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: var(--font-family);
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .submit-btn:hover,
+        .submit-btn:focus {
+            background-color: var(--color-button-hover-bg);
+            outline: none;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            background-color: #2a2a2a;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: var(--color-input-bg);
+            border: 1px dashed var(--color-border);
+            border-radius: 3px;
+            min-height: 50px;
+            word-wrap: break-word;
+            text-align: left;
+            font-size: 0.95em;
+            line-height: 1.5;
+            display: none;
+            /* Hidden initially */
+        }
+
+        #result.error {
+            color: var(--color-error);
+            border-color: var(--color-error);
+            display: block;
+        }
+
+        #result.success {
+            color: var(--color-success);
+            border-color: var(--color-success);
+            display: block;
+        }
+
+        #result a {
+            color: #99ddff;
+            /* Light blue for links */
+            text-decoration: none;
+        }
+
+        #result a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            textarea {
+                min-height: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>:: Encrypt Secret ::</h1>
+        <form id="encrypt-form">
+            <div class="form-group">
+                <label for="secret-text">Secret Data:</label>
+                <textarea id="secret-text" name="secret-text" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="passphrase">Passphrase:</label>
+                <input type="password" id="passphrase" name="passphrase" required>
+            </div>
+            <div class="form-group">
+                <label for="max-views">Max Views (Optional, Default 1):</label>
+                <input type="number" id="max-views" name="max-views" min="1" value="1">
+            </div>
+            <div class="form-group">
+                <label for="expiration-time">Expiration Time:</label>
+                <select id="expiration-time" name="expiration-time">
+                    <option value="1" selected>1 day</option>
+                    <option value="3">3 days</option>
+                    <option value="7">7 days</option>
+                    <option value="30">30 days</option>
+                </select>
+            </div>
+            <button type="submit" id="submit-btn" class="submit-btn">Encrypt & Store</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const encryptForm = document.getElementById('encrypt-form');
+        const secretTextInput = document.getElementById('secret-text');
+        const passphraseInput = document.getElementById('passphrase');
+        const maxViewsInput = document.getElementById('max-views');
+        const expirationTimeInput = document.getElementById('expiration-time');
+        const submitButton = document.getElementById('submit-btn');
+        const resultDiv = document.getElementById('result');
+
+        const API_URL = 'http://localhost:5150/api/secrets/encrypt';
+
+        encryptForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const secretText = secretTextInput.value.trim();
+            const passphrase = passphraseInput.value;
+            let maxViews = parseInt(maxViewsInput.value, 10);
+
+            if (!secretText) {
+                showResult('Secret data cannot be empty.', true);
+                return;
+            }
+            if (!passphrase) {
+                showResult('Passphrase cannot be empty.', true);
+                return;
+            }
+            if (isNaN(maxViews) || maxViews < 1) {
+                showResult('Max views must be a number greater than or equal to 1.', true);
+                maxViewsInput.value = 1;
+                maxViews = 1;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Encrypting...';
+            resultDiv.style.display = 'none';
+            resultDiv.className = '';
+
+            const payload = {
+                text: secretText,
+                passphrase: passphrase,
+                maxviews: maxViews,
+                expirationDays: parseInt(expirationTimeInput.value, 10)
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.uuid) {
+                        const decryptUrl = `${window.location.origin}/decrypt?uuid=${data.uuid}`;
+                        showResult(`Secret encrypted successfully!<br>UUID: ${data.uuid}<br>Click to copy link: <a href="#" class="copy-link" data-url="${decryptUrl}">${decryptUrl}</a> <span class="copy-status"></span>`, false);
+
+                        // click handler for copy functionality
+                        setTimeout(() => {
+                            const copyLink = document.querySelector('.copy-link');
+                            const copyStatus = document.querySelector('.copy-status');
+
+                            if (copyLink) {
+                                copyLink.addEventListener('click', function (e) {
+                                    e.preventDefault();
+                                    const urlToCopy = this.getAttribute('data-url');
+                                    navigator.clipboard.writeText(urlToCopy)
+                                        .then(() => {
+                                            copyStatus.textContent = '(Copied!)';
+                                            setTimeout(() => {
+                                                copyStatus.textContent = '';
+                                            }, 2000);
+                                        })
+                                        .catch(err => {
+                                            copyStatus.textContent = '(Copy failed)';
+                                            console.error('Failed to copy: ', err);
+                                        });
+                                });
+                            }
+                        }, 100);
+
+                        secretTextInput.value = '';
+                        passphraseInput.value = '';
+                        maxViewsInput.value = '1';
+                    } else {
+                        showResult('Encryption succeeded but no UUID received from server.', true);
+                    }
+                } else {
+                    let errorMessage = `Encryption failed. Status: ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        errorMessage += `: ${errorData.message || errorData.error || JSON.stringify(errorData)}`;
+                    } catch (e) {
+                        const textError = await response.text();
+                        if (textError) errorMessage += `: ${textError}`;
+                    }
+                    showResult(errorMessage, true);
+                }
+
+            } catch (error) {
+                console.error('Encryption Fetch Error:', error);
+                showResult(`An error occurred: ${error.message}. Is the backend server running at ${API_URL}?`, true);
+            } finally {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Encrypt & Store';
+            }
+        });
+
+        function showResult(message, isError) {
+            resultDiv.innerHTML = message; // Use innerHTML to render the link tag
+            resultDiv.className = isError ? 'error' : 'success';
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
