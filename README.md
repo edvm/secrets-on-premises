@@ -16,7 +16,7 @@ This project provides an API for storing encrypted data securely. It leverages m
 
 1. Clone this repository and:
    ```bash
-   cd secrets
+   cd secrets-on-premises
    ```
 
 2. Build the project:
@@ -103,9 +103,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Requescurl -X POST http://localhost:5150/api/secrets/decrypt/c96b3797-396c-41b2-8266-2cce52effaaf \
-  -H "Content-Type: application/json" \
-  -d '{"passphrase": "your-secure-passphrase"}'
+5. Open a Pull Request
 
 ## License
 
