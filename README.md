@@ -1,4 +1,4 @@
-# Secrets API
+# Secrets.rs
 
 This project provides an API and a Web UI for storing encrypted data securely. It leverages modern Rust libraries to create a high-performance, type-safe application with strong security guarantees.
 
