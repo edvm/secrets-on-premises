@@ -2,7 +2,7 @@
 
 This project provides an API and a Web UI for storing encrypted data securely. It leverages modern Rust libraries to create a high-performance, type-safe application with strong security guarantees.
 
-Try it online [here](https://one.hamkee.net/).
+Try it online [here]([(http://secrets.edvm.ar]).
 
 ## Features
 
@@ -111,7 +111,6 @@ This project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE - see the L
 
 ## Acknowledgments
 
-- [Hamkee](https://hamkee.net/) for providing the hosting, testing and support
 - Built with [Rust](https://www.rust-lang.org/)
 - Powered by [Loco.rs](https://loco.rs/) framework
 - Database access via [SeaORM](https://www.sea-ql.org/SeaORM/)
