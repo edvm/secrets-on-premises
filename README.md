@@ -2,15 +2,13 @@
 
 This project provides an API and a Web UI for storing encrypted data securely. It leverages modern Rust libraries to create a high-performance, type-safe application with strong security guarantees.
 
-Try it online [here](http://secrets.edvm.ar).
+Try it online at [https://secrets.edvm.network](https://secrets.edvm.network)
 
 ## Features
 
 - **Secure Storage**: All secrets are stored encrypted
 - **RESTful API**: Builtin RESTful API to encrypt/decrypt secrets
 - **Builtin Web UI**: A simple web interface for managing secrets
-
-![Encryption interface screenshot](screenshots/encrypt.png)
 
 ### Installation
 
