@@ -48,6 +48,7 @@
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
         }
 
         header {
@@ -67,6 +68,19 @@
             color: var(--color-text-light);
             font-size: 16px;
             margin: 0;
+        }
+
+        .form-container {
+            opacity: 1;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-container.hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
         }
 
         .uuid-container {
@@ -164,7 +178,18 @@
             cursor: not-allowed;
         }
 
-        #result {
+        .warning-box {
+            background-color: #FFF3E0;
+            border: 1px solid #FFB74D;
+            color: #E65100;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        #error-message {
             margin-top: 24px;
             padding: 16px;
             border-radius: 6px;
@@ -172,41 +197,138 @@
             line-height: 1.6;
             display: none;
             word-wrap: break-word;
-        }
-
-        #result.error {
             background-color: #FFEBEE;
             color: var(--color-error);
             border: 1px solid var(--color-error);
+        }
+
+        #error-message.visible {
             display: block;
         }
 
-        #result.success {
+        .success-screen {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            text-align: center;
+        }
+
+        .success-screen.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
             background-color: #E8F5E9;
-            color: #2E7D32;
-            border: 1px solid var(--color-success);
-            display: block;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: var(--color-success);
         }
 
-        .result-header {
+        .success-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin: 0 0 12px 0;
+        }
+
+        .success-message {
+            color: var(--color-text-light);
+            font-size: 15px;
+            margin: 0 0 32px 0;
+        }
+
+        .secret-display {
+            background-color: var(--color-bg-light);
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .secret-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-text-light);
             font-weight: 600;
             margin-bottom: 12px;
-            font-size: 15px;
         }
 
         .secret-content {
-            background-color: var(--color-bg);
-            padding: 16px;
-            border-radius: 4px;
-            border: 1px solid var(--color-border);
-            margin-top: 12px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            color: var(--color-text);
             white-space: pre-wrap;
             word-break: break-word;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 13px;
-            color: var(--color-text);
-            max-height: 400px;
+            line-height: 1.6;
+            max-height: 300px;
             overflow-y: auto;
+            background-color: var(--color-bg);
+            padding: 16px;
+            border-radius: 6px;
+        }
+
+        .copy-secret-btn {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-family);
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 24px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .copy-secret-btn:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        .copy-secret-btn:active {
+            transform: scale(0.98);
+        }
+
+        .destruction-notice {
+            background-color: #FFF3E0;
+            border: 1px solid #FFB74D;
+            color: #E65100;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-another-link {
+            display: block;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .create-another-link:hover {
+            text-decoration: underline;
         }
 
         .action-links {
@@ -250,17 +372,6 @@
             text-decoration: underline;
         }
 
-        .warning-box {
-            background-color: #FFF3E0;
-            border: 1px solid #FFB74D;
-            color: #E65100;
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 24px;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
         @media (max-width: 600px) {
             body {
                 padding: 12px;
@@ -286,6 +397,16 @@
                 margin-bottom: 20px;
             }
 
+            .success-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+            }
+
+            .success-title {
+                font-size: 20px;
+            }
+
             .secret-content {
                 font-size: 12px;
                 padding: 12px;
@@ -302,29 +423,56 @@
                 <p class="subtitle">Decrypt your secret</p>
             </header>
 
-            <div class="uuid-container">
-                <div class="uuid-label">Secret ID</div>
-                <div class="uuid-value" id="uuid-display">Loading...</div>
-            </div>
-
-            <div class="warning-box" id="warning-box" style="display: none;">
-                ⚠ This secret will self-destruct after viewing. Make sure to save it somewhere safe.
-            </div>
-
-            <form id="decrypt-form">
-                <div class="form-group">
-                    <label for="passphrase">Passphrase</label>
-                    <input type="password" id="passphrase" name="passphrase" required placeholder="Enter the passphrase" autocomplete="off">
-                    <div class="helper-text">Enter the passphrase that was used to encrypt this secret</div>
+            <div class="form-container" id="form-container">
+                <div class="uuid-container">
+                    <div class="uuid-label">Secret ID</div>
+                    <div class="uuid-value" id="uuid-display">Loading...</div>
                 </div>
 
-                <button type="submit" id="submit-btn" class="submit-btn">Decrypt Secret</button>
-            </form>
+                <div class="warning-box" id="warning-box" style="display: none;">
+                    ⚠ This secret will self-destruct after viewing. Make sure to save it somewhere safe.
+                </div>
 
-            <div id="result"></div>
+                <form id="decrypt-form">
+                    <div class="form-group">
+                        <label for="passphrase">Passphrase</label>
+                        <input type="password" id="passphrase" name="passphrase" required placeholder="Enter the passphrase" autocomplete="off">
+                        <div class="helper-text">Enter the passphrase that was used to encrypt this secret</div>
+                    </div>
 
-            <div class="action-links">
-                <a href="/" class="action-link">← Create a new secret</a>
+                    <button type="submit" id="submit-btn" class="submit-btn">Decrypt Secret</button>
+                </form>
+
+                <div id="error-message"></div>
+
+                <div class="action-links">
+                    <a href="/" class="action-link">← Create a new secret</a>
+                </div>
+            </div>
+
+            <div class="success-screen" id="success-screen">
+                <div class="success-icon">✓</div>
+                <h2 class="success-title">Secret Retrieved!</h2>
+                <p class="success-message">Here's your decrypted secret. Make sure to save it now.</p>
+
+                <div class="secret-display">
+                    <div class="secret-label">Your Secret</div>
+                    <div class="secret-content" id="secret-content">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+
+                <button id="copy-secret-btn" class="copy-secret-btn">
+                    <span>📋</span>
+                    <span id="copy-btn-text">Copy to Clipboard</span>
+                </button>
+
+                <div class="destruction-notice">
+                    <span>🔥</span>
+                    <span>This secret has been permanently deleted from the server</span>
+                </div>
+
+                <a href="/" class="create-another-link">← Create another secret</a>
             </div>
         </div>
 
@@ -338,12 +486,18 @@
         const decryptForm = document.getElementById('decrypt-form');
         const passphraseInput = document.getElementById('passphrase');
         const submitButton = document.getElementById('submit-btn');
-        const resultDiv = document.getElementById('result');
+        const formContainer = document.getElementById('form-container');
+        const successScreen = document.getElementById('success-screen');
+        const errorMessage = document.getElementById('error-message');
         const uuidDisplay = document.getElementById('uuid-display');
         const warningBox = document.getElementById('warning-box');
+        const secretContent = document.getElementById('secret-content');
+        const copySecretBtn = document.getElementById('copy-secret-btn');
+        const copyBtnText = document.getElementById('copy-btn-text');
 
         const API_URL = window.location.origin + '/api/secrets/decrypt';
         let currentUuid = null;
+        let currentSecret = '';
 
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -356,7 +510,7 @@
                 uuidDisplay.textContent = 'ERROR: No secret ID found in URL';
                 uuidDisplay.classList.add('uuid-error');
                 decryptForm.style.display = 'none';
-                showResult('Cannot decrypt without a secret ID. Please use the complete link that was shared with you.', true);
+                showError('Cannot decrypt without a secret ID. Please use the complete link that was shared with you.');
             }
         });
 
@@ -366,18 +520,17 @@
             const passphrase = passphraseInput.value;
 
             if (!currentUuid) {
-                showResult('Cannot decrypt: Missing secret ID.', true);
+                showError('Cannot decrypt: Missing secret ID.');
                 return;
             }
             if (!passphrase) {
-                showResult('Passphrase cannot be empty.', true);
+                showError('Passphrase cannot be empty.');
                 return;
             }
 
             submitButton.disabled = true;
             submitButton.textContent = 'Decrypting...';
-            resultDiv.style.display = 'none';
-            resultDiv.className = '';
+            errorMessage.classList.remove('visible');
 
             const payload = { passphrase: passphrase };
             const url = `${API_URL}/${currentUuid}`;
@@ -394,57 +547,74 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (data.secret !== undefined) {
-                        const secretHtml = `
-                            <div class="result-header">✓ Secret decrypted successfully</div>
-                            <div class="secret-content">${escapeHtml(data.secret)}</div>
-                        `;
-                        showResult(secretHtml, false);
-                        decryptForm.style.display = 'none';
-                        warningBox.style.display = 'none';
+                        currentSecret = data.secret;
+                        showSuccess(data.secret);
                     } else {
-                        showResult('Decryption succeeded but no content received from server.', true);
+                        showError('Decryption succeeded but no content received from server.');
                     }
                 } else {
-                    let errorMessage = 'Decryption failed';
+                    let errorMsg = 'Decryption failed';
 
                     try {
                         const errorData = await response.json();
-                        errorMessage = errorData.message || errorData.error || `Error ${response.status}`;
+                        errorMsg = errorData.message || errorData.error || `Error ${response.status}`;
                     } catch (e) {
                         const textError = await response.text();
-                        if (textError) errorMessage = textError;
+                        if (textError) errorMsg = textError;
                     }
 
                     if (response.status === 404 || response.status === 400) {
-                        errorMessage = 'Secret not found. It may have expired or reached its maximum view count.';
+                        errorMsg = 'Secret not found. It may have expired or reached its maximum view count.';
                     } else if (response.status === 401 || response.status === 403) {
-                        errorMessage = 'Incorrect passphrase. Please try again.';
+                        errorMsg = 'Incorrect passphrase. Please try again.';
                     }
 
-                    showResult(errorMessage, true);
+                    showError(errorMsg);
                     passphraseInput.value = '';
                     passphraseInput.focus();
                 }
 
             } catch (error) {
                 console.error('Decryption Error:', error);
-                showResult(`Network error: ${error.message}. Please check your connection and try again.`, true);
+                showError(`Network error: ${error.message}. Please check your connection and try again.`);
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Decrypt Secret';
             }
         });
 
-        function showResult(message, isError) {
-            resultDiv.innerHTML = message;
-            resultDiv.className = isError ? 'error' : 'success';
-            resultDiv.style.display = 'block';
+        copySecretBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(currentSecret);
+                copyBtnText.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    copyBtnText.textContent = 'Copy to Clipboard';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                copyBtnText.textContent = '✗ Copy failed';
+                setTimeout(() => {
+                    copyBtnText.textContent = 'Copy to Clipboard';
+                }, 2000);
+            }
+        });
+
+        function showSuccess(secret) {
+            secretContent.textContent = secret;
+
+            formContainer.classList.add('hidden');
+
+            setTimeout(() => {
+                successScreen.classList.add('visible');
+            }, 300);
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('visible');
+            setTimeout(() => {
+                errorMessage.classList.remove('visible');
+            }, 5000);
         }
     </script>
 </body>
