@@ -48,6 +48,7 @@
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
         }
 
         header {
@@ -67,6 +68,19 @@
             color: var(--color-text-light);
             font-size: 16px;
             margin: 0;
+        }
+
+        .form-container {
+            opacity: 1;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-container.hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
         }
 
         .form-group {
@@ -171,7 +185,107 @@
             cursor: not-allowed;
         }
 
-        #result {
+        .success-screen {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            text-align: center;
+        }
+
+        .success-screen.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            background-color: #E8F5E9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: var(--color-success);
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin: 0 0 12px 0;
+        }
+
+        .success-message {
+            color: var(--color-text-light);
+            font-size: 15px;
+            margin: 0 0 32px 0;
+        }
+
+        .action-button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-family);
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 12px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-button:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        .action-button:active {
+            transform: scale(0.98);
+        }
+
+        .action-button.secondary {
+            background-color: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .action-button.secondary:hover {
+            background-color: var(--color-bg-light);
+        }
+
+        .expiration-info {
+            background-color: var(--color-bg-light);
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--color-text-light);
+            margin: 24px 0;
+        }
+
+        .create-another-link {
+            display: block;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 24px;
+            padding: 12px;
+        }
+
+        .create-another-link:hover {
+            text-decoration: underline;
+        }
+
+        #error-message {
             margin-top: 24px;
             padding: 16px;
             border-radius: 6px;
@@ -179,37 +293,13 @@
             line-height: 1.6;
             display: none;
             word-wrap: break-word;
-        }
-
-        #result.error {
             background-color: #FFEBEE;
             color: var(--color-error);
             border: 1px solid var(--color-error);
+        }
+
+        #error-message.visible {
             display: block;
-        }
-
-        #result.success {
-            background-color: #E8F5E9;
-            color: #2E7D32;
-            border: 1px solid var(--color-success);
-            display: block;
-        }
-
-        #result a {
-            color: var(--color-primary);
-            text-decoration: none;
-            font-weight: 500;
-            word-break: break-all;
-        }
-
-        #result a:hover {
-            text-decoration: underline;
-        }
-
-        .copy-status {
-            color: var(--color-success);
-            font-size: 13px;
-            margin-left: 8px;
         }
 
         footer {
@@ -259,6 +349,16 @@
             textarea {
                 min-height: 100px;
             }
+
+            .success-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+            }
+
+            .success-title {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -271,39 +371,63 @@
                 <p class="subtitle">Share sensitive information in a secure way</p>
             </header>
 
-            <form id="encrypt-form">
-                <div class="form-group">
-                    <label for="secret-text">Secret Data</label>
-                    <textarea id="secret-text" name="secret-text" required placeholder="Enter your sensitive information here..."></textarea>
+            <div class="form-container" id="form-container">
+                <form id="encrypt-form">
+                    <div class="form-group">
+                        <label for="secret-text">Secret Data</label>
+                        <textarea id="secret-text" name="secret-text" required placeholder="Enter your sensitive information here..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passphrase">Passphrase</label>
+                        <input type="password" id="passphrase" name="passphrase" required placeholder="Enter a strong passphrase">
+                        <div class="helper-text">This passphrase will be required to decrypt the secret</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max-views">Maximum Views</label>
+                        <input type="number" id="max-views" name="max-views" min="1" max="100" value="1">
+                        <div class="helper-text">Number of times this secret can be viewed</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expiration-time">Expiration Time</label>
+                        <select id="expiration-time" name="expiration-time">
+                            <option value="1" selected>1 day</option>
+                            <option value="3">3 days</option>
+                            <option value="7">7 days</option>
+                            <option value="30">30 days</option>
+                        </select>
+                        <div class="helper-text">Secret will be deleted after this time</div>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="submit-btn">Encrypt & Create Link</button>
+                </form>
+
+                <div id="error-message"></div>
+            </div>
+
+            <div class="success-screen" id="success-screen">
+                <div class="success-icon">✓</div>
+                <h2 class="success-title">Secret Created Successfully!</h2>
+                <p class="success-message">Your secret has been encrypted and is ready to share</p>
+
+                <button id="copy-btn" class="action-button">
+                    <span>📋</span>
+                    <span id="copy-btn-text">Copy Link</span>
+                </button>
+
+                <button id="open-btn" class="action-button secondary">
+                    <span>↗</span>
+                    <span>Open in New Tab</span>
+                </button>
+
+                <div class="expiration-info" id="expiration-info">
+                    <!-- Will be populated dynamically -->
                 </div>
 
-                <div class="form-group">
-                    <label for="passphrase">Passphrase</label>
-                    <input type="password" id="passphrase" name="passphrase" required placeholder="Enter a strong passphrase">
-                    <div class="helper-text">This passphrase will be required to decrypt the secret</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="max-views">Maximum Views</label>
-                    <input type="number" id="max-views" name="max-views" min="1" max="100" value="1">
-                    <div class="helper-text">Number of times this secret can be viewed</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="expiration-time">Expiration Time</label>
-                    <select id="expiration-time" name="expiration-time">
-                        <option value="1" selected>1 day</option>
-                        <option value="3">3 days</option>
-                        <option value="7">7 days</option>
-                        <option value="30">30 days</option>
-                    </select>
-                    <div class="helper-text">Secret will be deleted after this time</div>
-                </div>
-
-                <button type="submit" id="submit-btn" class="submit-btn">Encrypt & Create Link</button>
-            </form>
-
-            <div id="result"></div>
+                <a href="/" class="create-another-link">← Create another secret</a>
+            </div>
         </div>
 
         <footer>
@@ -319,9 +443,16 @@
         const maxViewsInput = document.getElementById('max-views');
         const expirationTimeInput = document.getElementById('expiration-time');
         const submitButton = document.getElementById('submit-btn');
-        const resultDiv = document.getElementById('result');
+        const formContainer = document.getElementById('form-container');
+        const successScreen = document.getElementById('success-screen');
+        const errorMessage = document.getElementById('error-message');
+        const copyBtn = document.getElementById('copy-btn');
+        const copyBtnText = document.getElementById('copy-btn-text');
+        const openBtn = document.getElementById('open-btn');
+        const expirationInfo = document.getElementById('expiration-info');
 
         const API_URL = window.location.origin + '/api/secrets/encrypt';
+        let currentSecretUrl = '';
 
         encryptForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -331,23 +462,22 @@
             let maxViews = parseInt(maxViewsInput.value, 10);
 
             if (!secretText) {
-                showResult('Secret data cannot be empty.', true);
+                showError('Secret data cannot be empty.');
                 return;
             }
             if (!passphrase) {
-                showResult('Passphrase cannot be empty.', true);
+                showError('Passphrase cannot be empty.');
                 return;
             }
             if (isNaN(maxViews) || maxViews < 1) {
-                showResult('Max views must be a number greater than or equal to 1.', true);
+                showError('Max views must be a number greater than or equal to 1.');
                 maxViewsInput.value = 1;
                 return;
             }
 
             submitButton.disabled = true;
             submitButton.textContent = 'Encrypting...';
-            resultDiv.style.display = 'none';
-            resultDiv.className = '';
+            errorMessage.classList.remove('visible');
 
             const payload = {
                 text: secretText,
@@ -368,63 +498,73 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (data.uuid) {
-                        const decryptUrl = `${window.location.origin}/decrypt?uuid=${data.uuid}`;
-                        showResult(`✓ Secret encrypted successfully!<br><br><strong>Share this link:</strong><br><a href="#" class="copy-link" data-url="${decryptUrl}">${decryptUrl}</a> <span class="copy-status"></span><br><br>The link will expire after ${expirationTimeInput.options[expirationTimeInput.selectedIndex].text} or ${maxViews} view(s).`, false);
-
-                        setTimeout(() => {
-                            const copyLink = document.querySelector('.copy-link');
-                            const copyStatus = document.querySelector('.copy-status');
-
-                            if (copyLink) {
-                                copyLink.addEventListener('click', function (e) {
-                                    e.preventDefault();
-                                    const urlToCopy = this.getAttribute('data-url');
-                                    navigator.clipboard.writeText(urlToCopy)
-                                        .then(() => {
-                                            copyStatus.textContent = '✓ Copied!';
-                                            setTimeout(() => {
-                                                copyStatus.textContent = '';
-                                            }, 2000);
-                                        })
-                                        .catch(err => {
-                                            copyStatus.textContent = '✗ Copy failed';
-                                            console.error('Failed to copy: ', err);
-                                        });
-                                });
-                            }
-                        }, 100);
-
-                        secretTextInput.value = '';
-                        passphraseInput.value = '';
-                        maxViewsInput.value = '1';
+                        currentSecretUrl = `${window.location.origin}/decrypt?uuid=${data.uuid}`;
+                        const expirationText = expirationTimeInput.options[expirationTimeInput.selectedIndex].text;
+                        showSuccess(expirationText, maxViews);
                     } else {
-                        showResult('Encryption succeeded but no UUID received from server.', true);
+                        showError('Encryption succeeded but no UUID received from server.');
                     }
                 } else {
-                    let errorMessage = `Encryption failed (Status ${response.status})`;
+                    let errorMsg = `Encryption failed (Status ${response.status})`;
                     try {
                         const errorData = await response.json();
-                        errorMessage += `: ${errorData.message || errorData.error || JSON.stringify(errorData)}`;
+                        errorMsg += `: ${errorData.message || errorData.error || JSON.stringify(errorData)}`;
                     } catch (e) {
                         const textError = await response.text();
-                        if (textError) errorMessage += `: ${textError}`;
+                        if (textError) errorMsg += `: ${textError}`;
                     }
-                    showResult(errorMessage, true);
+                    showError(errorMsg);
                 }
 
             } catch (error) {
                 console.error('Encryption Error:', error);
-                showResult(`Network error: ${error.message}. Please check if the server is running.`, true);
+                showError(`Network error: ${error.message}. Please check if the server is running.`);
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Encrypt & Create Link';
             }
         });
 
-        function showResult(message, isError) {
-            resultDiv.innerHTML = message;
-            resultDiv.className = isError ? 'error' : 'success';
-            resultDiv.style.display = 'block';
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(currentSecretUrl);
+                copyBtnText.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    copyBtnText.textContent = 'Copy Link';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                copyBtnText.textContent = '✗ Copy failed';
+                setTimeout(() => {
+                    copyBtnText.textContent = 'Copy Link';
+                }, 2000);
+            }
+        });
+
+        openBtn.addEventListener('click', () => {
+            window.open(currentSecretUrl, '_blank', 'noopener,noreferrer');
+        });
+
+        function showSuccess(expirationText, maxViews) {
+            expirationInfo.textContent = `This secret will expire after ${expirationText} or ${maxViews} view(s), whichever comes first.`;
+
+            formContainer.classList.add('hidden');
+
+            setTimeout(() => {
+                successScreen.classList.add('visible');
+            }, 300);
+
+            secretTextInput.value = '';
+            passphraseInput.value = '';
+            maxViewsInput.value = '1';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('visible');
+            setTimeout(() => {
+                errorMessage.classList.remove('visible');
+            }, 5000);
         }
     </script>
 </body>
