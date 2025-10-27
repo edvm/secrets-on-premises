@@ -30,15 +30,40 @@ Try it online at [https://secrets.edvm.network](https://secrets.edvm.network)
 4. Access the web interface:
    Open your browser and navigate to `http://localhost:5150/` to access the web interface.
 
+### Container Deployment
 
-## Architecture
+Alternatively, you can build and run the application using Podman (or Docker):
 
-The project is built with the following technologies:
+1. Build the container image:
+   ```bash
+   podman build -t secrets-on-premises -f Containerfile .
+   ```
 
-- **[Loco.rs](https://loco.rs/)**: Modern Rust framework for building applications
-- **[SeaORM](https://www.sea-ql.org/SeaORM/)**: Async ORM for Rust
-- **[AES256 Encryption](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)**: Industry-standard encryption for data security
+2. Run the container:
+   ```bash
+   podman run -d \
+     --name secrets \
+     -p 5150:5150 \
+     -v secrets-data:/data \
+     -e LOCO_ENV=production \
+     secrets-on-premises
+   ```
 
+3. Access the web interface:
+   Open your browser and navigate to `http://localhost:5150/`
+
+4. View logs:
+   ```bash
+   podman logs -f secrets
+   ```
+
+5. Stop the container:
+   ```bash
+   podman stop secrets
+   podman rm secrets
+   ```
+
+**Note**: The container uses a volume (`secrets-data`) to persist the SQLite database. To use a different database, mount your config file and set the appropriate environment variables.
 
 ## API Endpoints
 
@@ -47,71 +72,3 @@ The project is built with the following technologies:
 | `/secrets/encrypt/` | POST | Create a new secret |
 | `/secrets/decrypt/:uid` | POST | Retrieve a secret by UUID |
 
-## Getting Started
-
-### Prerequisites
-
-- Rust 1.70+
-- (Optional) PostgreSQL or other supported database. SQLite is used by default.
-
-## Usage Example
-
-### Creating a Secret
-
-```bash
-curl -X POST http://localhost:5150/api/secrets/encrypt \
-  -H "Content-Type: application/json" \
-  -d '{"text": "your-secret-data", "passphrase": "your-secure-passphrase"}'
-```
-
-### Retrieving a Secret
-
-```bash
-curl -X POST http://localhost:5150/api/secrets/decrypt/c96b3797-396c-41b2-8266-2cce52effaaf \
-  -H "Content-Type: application/json" \
-  -d '{"passphrase": "your-secure-passphrase"}'
-```
-
-## Development
-
-### Adding a New Remote Repository
-
-```bash
-# Add a GitHub remote
-git remote add origin https://github.com/yourusername/secrets-on-premises.git
-
-# Verify remotes
-git remote -v
-
-# Push to remote
-git push -u origin main
-```
-
-### Running Tests
-
-```bash
-cargo test
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Built with [Rust](https://www.rust-lang.org/)
-- Powered by [Loco.rs](https://loco.rs/) framework
-- Database access via [SeaORM](https://www.sea-ql.org/SeaORM/)
-- Web framework [Axum](https://github.com/tokio-rs/axum)
-- Rust amazing community :love:
-- [Rustaceans](https://www.rust-lang.org/community)

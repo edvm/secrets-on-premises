@@ -6,7 +6,7 @@ use rand::RngCore;
 use pbkdf2::pbkdf2_hmac;
 use sha2::Sha256;
 
-pub trait Encryptable {
+pub trait Encryptable: Send + Sync {
     fn encrypt(&self, data: &[u8], key: &[u8]) -> Result<Vec<u8>, CryptoError>;
     fn decrypt(&self, data: &[u8], key: &[u8]) -> Result<Vec<u8>, CryptoError>;
 }
